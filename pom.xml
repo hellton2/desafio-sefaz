@@ -121,11 +121,7 @@
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>1.0.0.CR1</version>
-                 <configuration>
-                    <java-opts>
-                        <java-opt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8787</java-opt>
-                    </java-opts>
-                </configuration>
+
                 <executions>
                     <execution>
                         <goals>
