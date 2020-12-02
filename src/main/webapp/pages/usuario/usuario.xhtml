@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+
+    <h:form prependId="false" id="usuarioDataForm" onkeypress="if (event.keyCode == 13) {return false; }">
+
+        <p:dataTable id="usuarioTable" value="#{usuarioBean.usuarioList}" var="usuario" resizableColumns="true" paginator="true"
+                paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
+                paginatorPosition="bottom" widgetVar="usuarioTable" emptyMessage="#{messages.label_no_records_found}"
+                reflow="true">
+        
+          <f:facet name="header" >
+
+              <p:commandButton value="Usuário" icon="ui-icon-plusthick"
+                      action="/pages/usuario/usuarioCreate?faces-redirect=true"
+                      style="float:left" />
+              
+              <p:commandButton id="toggler" type="button" value="#{messages.table_select_columns}" icon="ui-icon-calculator" />
+              <p:columnToggler datasource="usuarioTable" trigger="toggler" />
+          </f:facet>
+          
+          <p:column  headerText="#{messages.field_label_Usuario_name}" sortBy="#{usuario.nome}" filterBy="#{usuario.nome}">
+            <f:facet name="filter">
+                <p:inputText id="nameFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('usuarioTable').filter(); updateNameFilter(); return false; }" >
+                    <p:remoteCommand name="updateNameFilter" update="usuarioTable:nameFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{usuario.nome}" />
+          </p:column>
+          
+          <p:column  headerText="#{messages.field_label_Usuario_email}" sortBy="#{usuario.email}" filterBy="#{usuario.email}">
+            <h:outputText value="#{usuario.email}" />
+          </p:column>
+       
+         
+          <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115" exportable="false">
+            
+            <p:commandButton action="#{'/pages/usuario/usuarioView?faces-redirect=true&amp;id='.concat(usuario.id)}"
+                icon="ui-icon-zoomin"
+                title="#{messages.label_view}" />
+            
+            <p:commandButton action="#{'/pages/usuario/usuarioEdit?faces-redirect=true&amp;id='.concat(usuario.id)}"
+                icon="ui-icon-pencil"
+                resetValues="true"
+                title="#{messages.label_edit}" />
+                
+            <p:commandButton icon="ui-icon-close" 
+                oncomplete="PF('deleteUsuarioDialogWidget').show()"
+                title="#{messages.label_delete}" >
+                <f:setPropertyActionListener value="#{usuario}"
+                    target="#{usuarioBean.usuario}" />
+            </p:commandButton>
+    
+          </p:column>
+          
+        </p:dataTable>
+        
+    </h:form>
+
+    <p:confirmDialog id="deleteUsuarioDialog" widgetVar="deleteUsuarioDialogWidget"
+        header="#{messages.label_confirm_deletion}"
+        severity="alarm">
+        <f:facet name="message"><h:outputText value="#{messages.label_delete_record}" escape="false"/></f:facet>
+        <p:outputPanel>
+          <h:form>
+            <div style="text-align: center; margin:10px">
+              <p:commandButton value="#{messages.label_yes}" action="#{usuarioBean.delete}" update=":usuarioDataForm :growlForm:growl" oncomplete="PF('deleteUsuarioDialogWidget').hide()" />
+              <p:commandButton value="#{messages.label_no}" onclick="PF('deleteUsuarioDialogWidget').hide()" type="button" />
+            </div>
+          </h:form>
+        </p:outputPanel>
+    </p:confirmDialog>
+    
+  </ui:define>
+</ui:composition>
+</html>

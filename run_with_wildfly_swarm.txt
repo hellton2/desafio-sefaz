@@ -1,0 +1,24 @@
+Instructions to deploy Sefaz with WildFly Swarm.
+You need to have generated this project with selected "Packaging WildFly Swarm" option from the generjee settings page.
+
+1. Prerequisites
+
+You need to have JDK 8 and Maven installed properly. If you do not have these already set up, please follow the official installation instructions for Oracle JDK and Apache Maven:
+JDK 8 Installation Guide: https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html
+https://maven.apache.org/install.html
+https://maven.apache.org/configure.html
+
+2. Start the application
+
+Go into the generated code directory and execute the command "mvn wildfly-swarm:run". This will direct Maven to pack a "fat jar" including WildFly Swarm.
+When you run this command the first time, it may take a few minutes to download all the dependencies. But next time it will be much faster.
+After the application is packaged and started successfully, you can start it in your browser with http://localhost:8080
+
+3. Tips
+
+The generated application has a default in-memory database configured. If you want set an other database, change the JNDI name in this two files:
+- src/main/resources/META-INF/persistence.xml - Change value of <jta-data-source>
+- src/main/webapp/WEB-INF/shiro.ini (If user authentication is activated) - Change the value of datasource.resourceName
+
+If you have chosen user self-registration, you must set an SMTP server to be able sending mails to users for registration confirmation and forgotten password handling. The SMTP server and credentials are configured in web.xml.
+If google mail complains about security, check if you want to set down the security level of the gmail account:  https://www.google.com/settings/security/lesssecureapps.
